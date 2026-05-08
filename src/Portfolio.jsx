@@ -1320,7 +1320,7 @@ const portfolioData = {
     github: "https://github.com/yashasvi1102",
     bio: [
       "I am a Master's student in Information Systems at Northeastern University with a strong focus on <strong>Artificial Intelligence</strong>, <strong>Data Engineering</strong>, and <strong>Knowledge Graph systems</strong>. My work centers around building AI-powered data systems that combine machine learning, GraphRAG architectures, and scalable data pipelines to extract insights from complex datasets.",
-      "Currently, I work as a <strong>GraphRAG AI Full-Stack Co-Op at CareerGPT</strong>, where I develop graph-based AI features and build intelligent knowledge retrieval systems using Neo4j and modern AI frameworks.",
+      "Currently, I work as a <strong>AI Full-Stack Engineer Co-Op at CareerGPT</strong>, where I develop graph-based AI features and build intelligent knowledge retrieval systems using Neo4j and modern AI frameworks.",
       "My experience includes developing knowledge graph systems, machine learning models, data pipelines, and AI-powered analytics platforms using technologies such as Python, Azure, Snowflake, Databricks, and Neo4j.",
       "I am passionate about solving real-world problems using AI, machine learning, and data engineering, and I am actively seeking opportunities in <strong>AI Engineering</strong>, <strong>Data Engineering</strong>, and <strong>Machine Learning</strong> roles."
     ]
