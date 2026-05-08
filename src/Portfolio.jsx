@@ -1319,11 +1319,14 @@ const portfolioData = {
     linkedin: "https://www.linkedin.com/in/yashasvi-nagar-b627542b2",
     github: "https://github.com/yashasvi1102",
     bio: [
-      "I am a Master's student in Information Systems at Northeastern University with a strong focus on <strong>Artificial Intelligence</strong>, <strong>Data Engineering</strong>, and <strong>Knowledge Graph systems</strong>. My work centers around building AI-powered data systems that combine machine learning, GraphRAG architectures, and scalable data pipelines to extract insights from complex datasets.",
-      "Currently, I work as a <strong>AI Full-Stack Engineer Co-Op at CareerGPT</strong>, where I develop graph-based AI features and build intelligent knowledge retrieval systems using Neo4j and modern AI frameworks.",
-      "My experience includes developing knowledge graph systems, machine learning models, data pipelines, and AI-powered analytics platforms using technologies such as Python, Azure, Snowflake, Databricks, and Neo4j.",
-      "I am passionate about solving real-world problems using AI, machine learning, and data engineering, and I am actively seeking opportunities in <strong>AI Engineering</strong>, <strong>Data Engineering</strong>, and <strong>Machine Learning</strong> roles."
-    ]
+  "I am currently pursuing a Master's degree in Information Systems at Northeastern University, specializing in <strong>Artificial Intelligence</strong>, <strong>Data Engineering</strong>, and <strong>Knowledge Graph Systems</strong>. My academic and professional interests focus on developing AI-powered data solutions that leverage machine learning, GraphRAG architectures, and scalable data pipelines to transform complex data into actionable insights.",
+
+  "Currently, I serve as an <strong>AI Full-Stack Engineer (Co-op) at CareerGPT</strong>, where I contribute to the development of graph-driven AI applications and intelligent knowledge retrieval systems using Neo4j and modern AI technologies.",
+
+  "My technical experience includes building knowledge graph solutions, developing machine learning models, designing scalable data pipelines, and implementing AI-driven analytics platforms using technologies such as Python, Azure, Snowflake, Databricks, and Neo4j.",
+
+  "I am passionate about applying AI, machine learning, and data engineering to solve real-world business challenges, and I am actively seeking opportunities in <strong>AI Engineering</strong>, <strong>Data Engineering</strong>, and <strong>Machine Learning Engineering</strong> roles."
+]
   },
 
   whatIDo: [
