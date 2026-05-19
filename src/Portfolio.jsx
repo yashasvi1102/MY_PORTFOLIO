@@ -5,7 +5,7 @@ const portfolioData = {
   personal: {
     name: "Yashasvi Nagar",
     tagline: "Graduate Student | AI & Data Engineering",
-    email: "nagaryashasvi@gmail.com",
+    email: "nagaryashasvi11@gmail.com",
     // location: "Boston, Massachusetts, USA",
     linkedin: "https://www.linkedin.com/in/yashasvi-nagar-b627542b2",
     github: "https://github.com/yashasvi1102",
