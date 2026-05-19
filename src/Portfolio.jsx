@@ -5,10 +5,9 @@ const portfolioData = {
   personal: {
     name: "Yashasvi Nagar",
     tagline: "Graduate Student | AI & Data Engineering",
-    // email: "nagaryashasvi@gmail.com",
-    // phone: "(617) 212-8032",
+    email: "nagaryashasvi@gmail.com",
     // location: "Boston, Massachusetts, USA",
-    // linkedin: "https://www.linkedin.com/in/yashasvi-nagar-b627542b2",
+    linkedin: "https://www.linkedin.com/in/yashasvi-nagar-b627542b2",
     github: "https://github.com/yashasvi1102",
     bio: [
   "I am currently pursuing a Master's degree in Information Systems at Northeastern University, specializing in <strong>Artificial Intelligence</strong>, <strong>Data Engineering</strong>, and <strong>Knowledge Graph Systems</strong>. My academic and professional interests focus on developing AI-powered data solutions that leverage machine learning, GraphRAG architectures, and scalable data pipelines to transform complex data into actionable insights.",
