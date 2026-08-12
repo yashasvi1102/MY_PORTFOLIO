@@ -310,35 +310,35 @@ export default function Portfolio() {
           gap: 1.5rem;
         }
         
-        .resume-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.6rem 1.2rem;
-          background: transparent;
-          border: 1px solid var(--primary);
-          color: var(--primary);
-          font-family: 'Rajdhani', sans-serif;
-          font-size: 0.85rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          text-decoration: none;
-          transition: all 0.3s;
-          clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-        }
+        // .resume-btn {
+        //   display: flex;
+        //   align-items: center;
+        //   gap: 0.5rem;
+        //   padding: 0.6rem 1.2rem;
+        //   background: transparent;
+        //   border: 1px solid var(--primary);
+        //   color: var(--primary);
+        //   font-family: 'Rajdhani', sans-serif;
+        //   font-size: 0.85rem;
+        //   font-weight: 600;
+        //   // text-transform: uppercase;
+        //   letter-spacing: 1px;
+        //   text-decoration: none;
+        //   transition: all 0.3s;
+        //   clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+        // }
         
-        .resume-btn:hover {
-          background: var(--primary);
-          color: var(--bg-dark);
-          transform: translateY(-2px);
-          box-shadow: 0 5px 20px var(--primary-glow);
-        }
+        // .resume-btn:hover {
+        //   background: var(--primary);
+        //   color: var(--bg-dark);
+        //   transform: translateY(-2px);
+        //   box-shadow: 0 5px 20px var(--primary-glow);
+        // }
         
-        .resume-btn svg {
-          width: 16px;
-          height: 16px;
-        }
+        // .resume-btn svg {
+        //   width: 16px;
+        //   height: 16px;
+        // }
         
         /* Hero */
         .hero {
@@ -1045,7 +1045,7 @@ export default function Portfolio() {
         @media (max-width: 768px) {
           .nav-links { display: none; }
           .mobile-menu { display: flex; }
-          .resume-btn { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
+          // .resume-btn { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
           .hero-name { font-size: 2.5rem; }
           .section-title { font-size: 2rem; }
           .whatido-grid { grid-template-columns: 1fr; }
@@ -1087,7 +1087,7 @@ export default function Portfolio() {
               );
             })}
           </ul>
-          <div className="nav-right">
+          {/* <div className="nav-right">
             <a href="yashasvi_resume.pdf" download className="resume-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -1099,7 +1099,7 @@ export default function Portfolio() {
             <div className="mobile-menu" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               <span></span><span></span><span></span>
             </div>
-          </div>
+          </div> */}
         </div>
       </nav>
 
