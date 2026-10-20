@@ -12,7 +12,7 @@ const portfolioData = {
     bio: [
   "I am currently pursuing a Master's degree in Information Systems at Northeastern University, specializing in <strong>Artificial Intelligence</strong>, <strong>Data Engineering</strong>, and <strong>Knowledge Graph Systems</strong>. My academic and professional interests focus on developing AI-powered data solutions that leverage machine learning, GraphRAG architectures, and scalable data pipelines to transform complex data into actionable insights.",
 
-  "Currently, I serve as an <strong>AI Full-Stack Engineer (Co-op) at CareerGPT</strong>, where I contribute to the development of graph-driven AI applications and intelligent knowledge retrieval systems using Neo4j and modern AI technologies.",
+  "Currently, I serve as an <strong>AI Full-Stack Engineer (Co-op) at Cernuvo</strong>, where I contribute to the development of graph-driven AI applications and intelligent knowledge retrieval systems using Neo4j and modern AI technologies.",
 
   "My technical experience includes building knowledge graph solutions, developing machine learning models, designing scalable data pipelines, and implementing AI-driven analytics platforms using technologies such as Python, Azure, Snowflake, Databricks, and Neo4j.",
 
