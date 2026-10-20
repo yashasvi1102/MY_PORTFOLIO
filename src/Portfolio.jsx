@@ -138,14 +138,25 @@ const RevealSection = ({ children, className = '' }) => {
 
 // ---------------------------------------------------------------------------
 // Knowledge graph background
-// A fixed graph of entities (nodes) and relationships (edges). Every few
-// seconds a "query" starts at a labeled hub node and lights up a multi-hop
-// traversal, the way GraphRAG walks a graph to gather context.
-// Moving the mouse draws links to nearby nodes, like querying that region.
+// A real graph of your work: project nodes (hubs) linked to the technologies
+// actually used in them. Shared tools (Neo4j, Python, GraphRAG) become bridges
+// between projects. Every few seconds a traversal starts at a project, lights
+// up its stack, then hops through shared tools to related projects — the way
+// GraphRAG walks a graph to gather context.
+// Keep this in sync with your projects: only list tools you really used.
 // ---------------------------------------------------------------------------
-const KG_LABELS = [
-  'Patient', 'Policy', 'Claim', 'Procedure', 'Diagnosis', 'Provider',
-  'Suspect', 'Location', 'Evidence', 'Document', 'Payer', 'Encounter'
+const KG_PROJECTS = [
+  { name: 'PriorAuthPilot', tech: ['LangGraph', 'MCP', 'RAG', 'Python'] },
+  { name: 'MediQuery', tech: ['Neo4j', 'GraphRAG', 'Snowflake', 'dbt', 'FHIR'] },
+  { name: 'CrimeGraphRAG', tech: ['Neo4j', 'GraphRAG', 'Streamlit', 'NetworkX', 'Python'] },
+  { name: 'Cernuvo', tech: ['Neo4j', 'GraphRAG', 'Python'] },
+  { name: 'Emotion Recognition', tech: ['PyTorch', 'BERT', 'Streamlit', 'Python'] },
+  { name: 'LA Crime Lakehouse', tech: ['Databricks', 'PySpark', 'Azure'] },
+];
+
+// Where project hubs sit, as fractions of the screen (kept away from the hero text)
+const KG_HUB_SPOTS = [
+  [0.62, 0.18], [0.82, 0.42], [0.12, 0.82], [0.9, 0.12], [0.45, 0.88], [0.78, 0.82],
 ];
 
 const KnowledgeGraphBackground = () => {
@@ -158,14 +169,39 @@ const KnowledgeGraphBackground = () => {
 
     const CYAN = '0, 212, 255';
     const BLUE = '70, 130, 255';
-    const HOP_MS = 420;          // time for a pulse to cross one edge
-    const QUERY_EVERY_MS = 2800; // how often a new traversal starts
+    const HOP_MS = 480;          // time for a pulse to cross one edge
+    const QUERY_EVERY_MS = 4000; // how often a new traversal starts
     const MOUSE_RADIUS = 150;
 
     let w = 0, h = 0, raf = 0, resizeTimer = 0;
     let nodes = [], edges = [], adj = [], queries = [];
     let lastQuery = -QUERY_EVERY_MS;
+    let showTechLabels = true;
     const mouse = { x: -9999, y: -9999 };
+
+    const makeNode = (x, y, kind, label) => ({
+      ax: x, ay: y, x, y,
+      kind, // 'project' | 'tech' | 'filler'
+      label,
+      r: kind === 'project' ? 4.5 : kind === 'tech' ? 2.8 : 1.4 + Math.random() * 1,
+      color: kind === 'filler' && Math.random() > 0.5 ? BLUE : CYAN,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.00015 + Math.random() * 0.0002,
+      amp: kind === 'project' ? 5 : 6 + Math.random() * 12,
+      glow: 0,
+    });
+
+    const seen = new Set();
+    const link = (i, j) => {
+      if (i === j) return;
+      const id = i < j ? `${i}-${j}` : `${j}-${i}`;
+      if (seen.has(id)) return;
+      seen.add(id);
+      const e = { a: i, b: j, glow: 0 };
+      edges.push(e);
+      adj[i].push({ to: j, e });
+      adj[j].push({ to: i, e });
+    };
 
     const build = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -176,70 +212,74 @@ const KnowledgeGraphBackground = () => {
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      showTechLabels = w >= 640;
 
-      const count = Math.max(28, Math.min(85, Math.round((w * h) / 16000)));
-      const hubCount = Math.round(count * 0.15);
-
-      nodes = Array.from({ length: count }, (_, i) => {
-        const hub = i < hubCount;
-        return {
-          ax: Math.random() * w,
-          ay: Math.random() * h,
-          x: 0,
-          y: 0,
-          r: hub ? 3.6 : 1.6 + Math.random() * 1.2,
-          hub,
-          label: hub ? KG_LABELS[i % KG_LABELS.length] : null,
-          color: hub || Math.random() > 0.35 ? CYAN : BLUE,
-          phase: Math.random() * Math.PI * 2,
-          speed: 0.00018 + Math.random() * 0.00025,
-          amp: 6 + Math.random() * 14,
-          glow: 0
-        };
-      });
-      nodes.forEach(n => { n.x = n.ax; n.y = n.ay; });
-
-      // Connect each node to its nearest neighbours (hubs get more links)
-      const seen = new Set();
+      nodes = [];
       edges = [];
-      adj = nodes.map(() => []);
-      const maxDist = Math.max(w, h) * 0.22;
+      seen.clear();
 
+      // 1. Project hubs
+      const projectIdx = KG_PROJECTS.map((p, i) => {
+        const [fx, fy] = KG_HUB_SPOTS[i % KG_HUB_SPOTS.length];
+        nodes.push(makeNode(fx * w + (Math.random() - 0.5) * 40, fy * h + (Math.random() - 0.5) * 40, 'project', p.name));
+        return nodes.length - 1;
+      });
+
+      // 2. Technology nodes, placed near the centre of the projects that use them
+      const techUsers = {};
+      KG_PROJECTS.forEach((p, i) => p.tech.forEach(t => { (techUsers[t] = techUsers[t] || []).push(projectIdx[i]); }));
+      const techIdx = {};
+      Object.entries(techUsers).forEach(([tech, users]) => {
+        const cx = users.reduce((s, u) => s + nodes[u].ax, 0) / users.length;
+        const cy = users.reduce((s, u) => s + nodes[u].ay, 0) / users.length;
+        const spread = users.length > 1 ? 40 : 70 + Math.random() * 50;
+        const angle = Math.random() * Math.PI * 2;
+        const x = Math.min(w - 20, Math.max(20, cx + Math.cos(angle) * spread));
+        const y = Math.min(h - 20, Math.max(20, cy + Math.sin(angle) * spread));
+        nodes.push(makeNode(x, y, 'tech', tech));
+        techIdx[tech] = nodes.length - 1;
+      });
+
+      // 3. Unlabeled filler nodes for texture
+      const fillerCount = Math.max(14, Math.min(55, Math.round((w * h) / 26000)));
+      for (let i = 0; i < fillerCount; i++) {
+        nodes.push(makeNode(Math.random() * w, Math.random() * h, 'filler', null));
+      }
+
+      adj = nodes.map(() => []);
+
+      // Real edges: project -> technology it used
+      KG_PROJECTS.forEach((p, i) => p.tech.forEach(t => link(projectIdx[i], techIdx[t])));
+
+      // Texture edges: each filler node to its 2 nearest neighbours
+      const maxDist = Math.max(w, h) * 0.2;
       nodes.forEach((n, i) => {
-        const k = n.hub ? 4 : 2;
+        if (n.kind !== 'filler') return;
         nodes
           .map((m, j) => ({ j, d: Math.hypot(m.ax - n.ax, m.ay - n.ay) }))
           .filter(o => o.j !== i && o.d < maxDist)
           .sort((a, b) => a.d - b.d)
-          .slice(0, k)
-          .forEach(({ j }) => {
-            const id = i < j ? `${i}-${j}` : `${j}-${i}`;
-            if (seen.has(id)) return;
-            seen.add(id);
-            const e = { a: i, b: j, glow: 0 };
-            edges.push(e);
-            adj[i].push({ to: j, e });
-            adj[j].push({ to: i, e });
-          });
+          .slice(0, 2)
+          .forEach(({ j }) => link(i, j));
       });
 
       queries = [];
     };
 
-    // Breadth-first traversal from a hub, up to 3 hops
+    // Traversal from a project: project -> its tools -> other projects sharing them.
+    // Only follows real (non-filler) nodes so the path always means something.
     const startQuery = (t) => {
-      const hubs = nodes.map((n, i) => (n.hub ? i : -1)).filter(i => i >= 0 && adj[i].length);
-      if (!hubs.length) return;
+      const hubs = nodes.map((n, i) => (n.kind === 'project' ? i : -1)).filter(i => i >= 0);
       const start = hubs[Math.floor(Math.random() * hubs.length)];
       const visited = new Set([start]);
       const steps = [];
       let frontier = [start];
 
-      for (let depth = 0; depth < 3 && steps.length < 14; depth++) {
+      for (let depth = 0; depth < 2; depth++) {
         const next = [];
         frontier.forEach(from => {
           adj[from].forEach(({ to, e }) => {
-            if (visited.has(to) || steps.length >= 14) return;
+            if (visited.has(to) || nodes[to].kind === 'filler') return;
             visited.add(to);
             next.push(to);
             steps.push({ from, to, e, start: t + depth * HOP_MS, done: false });
@@ -249,13 +289,12 @@ const KnowledgeGraphBackground = () => {
       }
 
       nodes[start].glow = 1;
-      queries.push({ steps, end: t + 3 * HOP_MS + 100 });
+      queries.push({ steps, end: t + 2 * HOP_MS + 100 });
     };
 
     const draw = (t) => {
       ctx.clearRect(0, 0, w, h);
 
-      // Gentle drift around each node's anchor so edges stay stable
       if (!reduceMotion) {
         nodes.forEach(n => {
           n.x = n.ax + Math.sin(t * n.speed + n.phase) * n.amp;
@@ -263,22 +302,23 @@ const KnowledgeGraphBackground = () => {
         });
       }
 
-      // Base edges
+      // Base edges: real project-tech links slightly stronger than texture links
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `rgba(${CYAN}, 0.08)`;
-      ctx.beginPath();
       edges.forEach(e => {
         const a = nodes[e.a], b = nodes[e.b];
+        const real = a.kind !== 'filler' && b.kind !== 'filler';
+        ctx.strokeStyle = `rgba(${CYAN}, ${real ? 0.13 : 0.06})`;
+        ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(b.x, b.y);
+        ctx.stroke();
       });
-      ctx.stroke();
 
       // Edges lit by a traversal
       edges.forEach(e => {
         if (e.glow < 0.02) return;
         const a = nodes[e.a], b = nodes[e.b];
-        ctx.strokeStyle = `rgba(${CYAN}, ${0.1 + e.glow * 0.5})`;
+        ctx.strokeStyle = `rgba(${CYAN}, ${0.12 + e.glow * 0.5})`;
         ctx.lineWidth = 1 + e.glow * 0.8;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
@@ -287,7 +327,7 @@ const KnowledgeGraphBackground = () => {
         e.glow *= 0.985;
       });
 
-      // Pulses travelling along the traversal edges
+      // Pulses travelling along traversal edges
       queries.forEach(q => {
         q.steps.forEach(s => {
           if (s.done || t < s.start) return;
@@ -326,8 +366,7 @@ const KnowledgeGraphBackground = () => {
         });
       }
 
-      // Nodes
-      ctx.font = "10px 'Space Mono', monospace";
+      // Nodes and labels
       nodes.forEach(n => {
         const d = Math.hypot(n.x - mouse.x, n.y - mouse.y);
         const near = d < MOUSE_RADIUS ? 1 - d / MOUSE_RADIUS : 0;
@@ -343,19 +382,25 @@ const KnowledgeGraphBackground = () => {
           ctx.fill();
         }
 
-        ctx.fillStyle = `rgba(${n.color}, ${(n.hub ? 0.65 : 0.4) + intensity * 0.35})`;
+        const base = n.kind === 'project' ? 0.7 : n.kind === 'tech' ? 0.55 : 0.35;
+        ctx.fillStyle = `rgba(${n.color}, ${base + intensity * 0.3})`;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fill();
 
-        if (n.hub) {
-          ctx.strokeStyle = `rgba(${CYAN}, ${0.25 + intensity * 0.5})`;
+        if (n.kind === 'project') {
+          ctx.strokeStyle = `rgba(${CYAN}, ${0.3 + intensity * 0.5})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r + 3, 0, Math.PI * 2);
+          ctx.arc(n.x, n.y, n.r + 4, 0, Math.PI * 2);
           ctx.stroke();
-          ctx.fillStyle = `rgba(150, 210, 235, ${0.28 + intensity * 0.5})`;
-          ctx.fillText(`:${n.label}`, n.x + 9, n.y + 3);
+          ctx.font = "600 12px 'Rajdhani', sans-serif";
+          ctx.fillStyle = `rgba(200, 235, 250, ${0.35 + intensity * 0.5})`;
+          ctx.fillText(n.label, n.x + 12, n.y + 4);
+        } else if (n.kind === 'tech' && showTechLabels) {
+          ctx.font = "10px 'Space Mono', monospace";
+          ctx.fillStyle = `rgba(120, 200, 230, ${0.25 + intensity * 0.6})`;
+          ctx.fillText(n.label, n.x + 7, n.y + 3);
         }
 
         n.glow *= 0.97;
@@ -367,8 +412,33 @@ const KnowledgeGraphBackground = () => {
       }
     };
 
+    // The graph stays visible across the whole site. It is full strength in
+    // the hero and dims to BELOW_HERO_OPACITY behind the other sections so
+    // paragraphs and project slides stay easy to read.
+    //   1    = full strength everywhere
+    //   0.45 = default: clearly visible, but calmer behind text
+    //   0    = hero only (fades out completely and stops drawing)
+    const BELOW_HERO_OPACITY = 0.45;
+    let opacity = 1;
+    let cleared = false;
+    const updateOpacity = () => {
+      const fadeStart = window.innerHeight * 0.35;
+      const fadeEnd = window.innerHeight * 0.9;
+      const p = Math.max(0, Math.min(1, (window.scrollY - fadeStart) / (fadeEnd - fadeStart)));
+      opacity = 1 - p * (1 - BELOW_HERO_OPACITY);
+      canvas.style.opacity = opacity;
+      if (reduceMotion && opacity > 0) draw(0);
+    };
+
     const loop = (t) => {
-      draw(t);
+      if (opacity > 0.01) {
+        draw(t);
+        cleared = false;
+      } else if (!cleared) {
+        // Hidden below the hero: stop drawing to save battery/CPU
+        ctx.clearRect(0, 0, w, h);
+        cleared = true;
+      }
       raf = requestAnimationFrame(loop);
     };
 
@@ -391,11 +461,14 @@ const KnowledgeGraphBackground = () => {
       document.addEventListener('mouseleave', onMouseLeave);
     }
     window.addEventListener('resize', onResize);
+    window.addEventListener('scroll', updateOpacity, { passive: true });
+    updateOpacity();
 
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(resizeTimer);
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', updateOpacity);
       window.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseleave', onMouseLeave);
     };
