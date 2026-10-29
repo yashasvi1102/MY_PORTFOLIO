@@ -10,8 +10,6 @@ const portfolioData = {
     email: "nagaryashasvi11@gmail.com",
     linkedin: "https://www.linkedin.com/in/yashasvi-nagar-b627542b2",
     github: "https://github.com/yashasvi1102",
-    // Put your resume PDF in the /public folder with exactly this name
-    resume: "/Yashasvi_Nagar_Resume.pdf",
     bio: [
       "I'm finishing my Master's in Information Systems at <strong>Northeastern University</strong> (December 2026), focused on building <strong>LLM-powered systems</strong> that people can actually trust: agents whose decisions can be audited, and retrieval that answers from real sources instead of guessing.",
 
@@ -489,14 +487,6 @@ const LinkedInIcon = ({ size = 22 }) => (
   </svg>
 );
 
-const DownloadIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-    <polyline points="7 10 12 15 17 10"/>
-    <line x1="12" y1="15" x2="12" y2="3"/>
-  </svg>
-);
-
 const icons = {
   agent: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -743,33 +733,8 @@ export default function Portfolio() {
           background: var(--primary);
         }
 
-        .resume-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.6rem 1.2rem;
-          background: transparent;
-          border: 1px solid var(--primary);
-          color: var(--primary);
-          font-family: 'Rajdhani', sans-serif;
-          font-size: 0.85rem;
-          font-weight: 600;
-          letter-spacing: 1px;
-          text-decoration: none;
-          transition: all 0.3s;
-          clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-        }
 
-        .resume-btn:hover {
-          background: var(--primary);
-          color: var(--bg-dark);
-          box-shadow: 0 5px 20px var(--primary-glow);
-        }
 
-        .resume-btn svg {
-          width: 16px;
-          height: 16px;
-        }
 
         /* Hero */
         .hero {
@@ -839,29 +804,8 @@ export default function Portfolio() {
           margin-top: 0.5rem;
         }
 
-        .hero-resume-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.6rem;
-          height: 52px;
-          padding: 0 1.6rem;
-          background: var(--gradient-1);
-          color: var(--bg-dark);
-          font-family: 'Rajdhani', sans-serif;
-          font-size: 1rem;
-          font-weight: 700;
-          letter-spacing: 1px;
-          text-decoration: none;
-          transition: all 0.3s;
-          clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-        }
 
-        .hero-resume-btn svg { width: 18px; height: 18px; }
 
-        .hero-resume-btn:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 8px 25px var(--primary-glow);
-        }
 
         .hero-github-btn {
           display: inline-flex;
@@ -1305,7 +1249,6 @@ export default function Portfolio() {
           .nav-links.open { display: flex; }
           .nav-links a { display: block; padding: 1rem 1.25rem; }
           .nav-links a::after { display: none; }
-          .resume-btn { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
           .hero-name { font-size: 2.5rem; }
           .section-title { font-size: 2rem; }
           .whatido-grid { grid-template-columns: 1fr; }
@@ -1350,10 +1293,6 @@ export default function Portfolio() {
                 );
               })}
             </ul>
-            <a href={portfolioData.personal.resume} target="_blank" rel="noopener noreferrer" className="resume-btn">
-              <DownloadIcon />
-              Resume
-            </a>
             <button
               className="mobile-menu"
               aria-label="Toggle navigation"
@@ -1376,15 +1315,6 @@ export default function Portfolio() {
             <h2 className="hero-title">{portfolioData.personal.tagline}</h2>
             <p className="hero-description">{portfolioData.personal.heroDescription}</p>
             <div className="hero-buttons">
-              <a
-                href={portfolioData.personal.resume}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hero-resume-btn"
-              >
-                <DownloadIcon />
-                View Resume
-              </a>
               <a
                 href={portfolioData.personal.github}
                 target="_blank"
