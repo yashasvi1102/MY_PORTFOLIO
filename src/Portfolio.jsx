@@ -25,8 +25,7 @@ const portfolioData = {
     {
       title: "Agentic AI Workflows",
       description: "I design multi-step LLM agents with LangGraph and MCP, routing work through retrieval, rule checks, and actions, with deterministic logic wherever a decision needs to be auditable.",
-      // TODO: add PriorAuthPilot repo URL when public (card becomes a link automatically)
-      github: "",
+      github: "https://github.com/nancytaswala23/priorauth-pilot",
       icon: "agent"
     },
     {
@@ -68,8 +67,7 @@ const portfolioData = {
       status: "In progress",
       description: "An AI assistant that checks patient records against Medicare coverage policy before a prior authorization is submitted. Policy retrieval is filtered by payer, procedure, and jurisdiction so the wrong policy never reaches the model, coverage criteria are checked by testable rules instead of LLM judgment, and a LangGraph agent routes each case by denial risk. Three MCP servers wrap claims data, policy search, and submission tracking, and an appeal module turns denial codes into evidence-backed responses.",
       tags: ["LangGraph", "MCP", "RAG", "Healthcare"],
-      // TODO: add repo URL when public (the GitHub link is hidden while empty)
-      github: ""
+      github: "https://github.com/nancytaswala23/priorauth-pilot"
     },
     {
       id: 2,
